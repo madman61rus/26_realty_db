@@ -5,6 +5,7 @@ from config import POST_PER_PAGE, SECRET_KEY
 from datetime import datetime
 
 app = Flask(__name__)
+app.jinja_env.add_extension('jinja2.ext.do')
 app.config.from_object('config')
 app.secret_key = SECRET_KEY
 db.init_app(app)
@@ -50,13 +51,13 @@ def make_query():
 
 @app.route('/')
 def filter():
-    current_page = request.args.get('current_page') or '1'
-    print(make_query())
-
+    current_page = request.args.get('page') or '1'
+    args = dict(request.args)
+    args.pop('page',None)
     ads = Appartment.query.filter(make_query()).paginate(int(current_page), POST_PER_PAGE)
 
     return render_template('ads_list.html',
-                           args=request.args,
+                           args=args,
                            ads=ads)
 
 

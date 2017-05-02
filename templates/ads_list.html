@@ -153,6 +153,7 @@
                 <div class="panel-body">
                   <div class="clearfix">
                     <ul class="pagination pull-right">
+                    {% set copy_args = dict(request.args) %}
                         {% if ads.has_prev %}
                       <li><a href="{{ url_for(request.endpoint, args = args, page=ads.prev_num) }}"><span>«</span></a></li>
                     {% else %}
@@ -161,12 +162,8 @@
                       {% for page in ads.iter_pages() %}
                       {% if page %}
                         {% if page != ads.page %}
-                          <li><a href="{{ url_for(request.endpoint ,
-                                    oblast_district = args.get('oblast_district'),
-                                    new_building = args.get('new_building'),
-                                    min_price = args.get('min_price'),
-                                    max_price = args.get('max_price'),
-                                  current_page = page) }}">{{ page }}</a></li>
+                            {% do copy_args.update({'page' : page}) %}
+                          <li><a href="{{ url_for(request.endpoint , **copy_args) }}">{{ page }}</a></li>
                         {% else %}
                           <li class="active"><span>{{ page }}</span></li>
                         {% endif %}
@@ -175,7 +172,7 @@
                       {% endif %}
                     {% endfor %}
                         {% if ads.has_next %}
-                      <li><a href="{{ url_for(request.endpoint, args = args, page=ads.next_num) }}"><span>»</span></a></li>
+                      <li><a href="{{ url_for(request.endpoint, page=ads.next_num , **args) }}"><span>»</span></a></li>
                     {% else %}
                       <li class="disabled"><span>»</span></li>
                     {% endif %}
