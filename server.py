@@ -20,20 +20,13 @@ def filter():
     args.pop('page',None)
     maximum_price = db.session.query(func.max(Appartment.price)).one()[0]
 
-    if request.args.get('new_building'):
-        ads = Appartment.query.filter(
-            Appartment.construction_year >= (datetime.now().year - 2),
-            Appartment.price < request.args.get('max_price', maximum_price, type=int),
-            Appartment.price > request.args.get('min_price', 0, type=int),
-            Appartment.oblast_district == request.args.get('oblast_district'),
-            Appartment.active.is_(True)).paginate(int(current_page), POST_PER_PAGE)
-    else:
-        ads = Appartment.query.filter(
+    ads = Appartment.query.filter(
+        '' if not request.args.get('new_building') else Appartment.construction_year >= (datetime.now().year - 2),
+        Appartment.price < request.args.get('max_price', maximum_price, type=int),
+        Appartment.price > request.args.get('min_price', 0, type=int),
+        Appartment.oblast_district == request.args.get('oblast_district'),
+        Appartment.active.is_(True)).paginate(int(current_page), POST_PER_PAGE)
 
-            Appartment.price < request.args.get('max_price', maximum_price, type=int),
-            Appartment.price > request.args.get('min_price', 0, type=int),
-            Appartment.oblast_district == request.args.get('oblast_district'),
-            Appartment.active.is_(True)).paginate(int(current_page), POST_PER_PAGE)
 
     return render_template('ads_list.html',
                            args=args,
