@@ -27,10 +27,7 @@ def filter():
         Appartment.oblast_district == request.args.get('oblast_district'),
         Appartment.active.is_(True)).paginate(int(current_page), POST_PER_PAGE)
 
-
-    return render_template('ads_list.html',
-                           args=args,
-                           ads=ads)
+    return render_template('ads_list.html', args=args, ads=ads)
 
 
 if __name__ == "__main__":
